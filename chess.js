@@ -2,11 +2,13 @@ function startChess(){
   board=[];
   boardValue=[[],[],[],[],[],[],[],[]];
   moving=false;
-  token='White';
+  turnToken='White';
 
   gameDiv.appendChild(boardDiv);
   creatingChessBoard();
   placingPawn();
+  h2.removeChild(h2.firstChild);
+  h2.appendChild(h2ChessText);
 }
 function creatingChessBoard() {
   let boxDiv = document.createElement('div');
@@ -14,6 +16,7 @@ function creatingChessBoard() {
     let rowDiv = document.createElement('div');
     for(let j=0; j<8; j++) {
       let tile= document.createElement('button');
+      tile.setAttribute('class','tile');
       let index=(j+1)+(i*8)-1;
       tile.setAttribute('class','tile');
       tile.style.height='35px';
@@ -22,18 +25,18 @@ function creatingChessBoard() {
       if((i+j)%2===1) {tile.style.background='gray';}
       else {tile.style.background='white';}
       tile.addEventListener('click', function() {
-        if(boardValue[i][j]!==null && boardValue[i][j].match(token)) {
+        if(boardValue[i][j]!==null && boardValue[i][j].match(turnToken)) {
           clearTile();
-          if(boardValue[i][j].match(/Pawn$/)){turnToken='Pawn'; pawnMove(index);}
-          else if(boardValue[i][j].match(/Rook$/)){turnToken='Rook'; rookMove(index);}
-          else if(boardValue[i][j].match(/Knight$/)){turnToken='Knight'; knightMove(index);}
-          else if(boardValue[i][j].match(/Bishop$/)){turnToken='Bishop'; bishopMove(index);}
-          else if(boardValue[i][j].match(/Queen$/)){turnToken='Queen'; rookMove(index); bishopMove(index);}
-          else if(boardValue[i][j].match(/King$/)){turnToken='King'; kingMove(index);}
+          if(boardValue[i][j].match(/Pawn$/)){tokenStatus='Pawn'; pawnMove(index);}
+          else if(boardValue[i][j].match(/Rook$/)){tokenStatus='Rook'; rookMove(index);}
+          else if(boardValue[i][j].match(/Knight$/)){tokenStatus='Knight'; knightMove(index);}
+          else if(boardValue[i][j].match(/Bishop$/)){tokenStatus='Bishop'; bishopMove(index);}
+          else if(boardValue[i][j].match(/Queen$/)){tokenStatus='Queen'; rookMove(index); bishopMove(index);}
+          else if(boardValue[i][j].match(/King$/)){tokenStatus='King'; kingMove(index);}
           startIndex=index;
         }
         else if(tile.style.background==='green' || tile.style.background==='red') {
-	        movePawn(startIndex,index,token+turnToken)
+	        movePawn(startIndex,index,turnToken+tokenStatus)
         }
         else if(tile.style.background!=='green') {
           moving=false;            
@@ -100,33 +103,33 @@ function placingPawn() {
   }
 }
 
-function pawnMove(index) { //bug melangkah 2 di awal ketika di depan nya ada pion dan dapat memakan teman
+function pawnMove(index) { 
   moving=true;
   let i=Math.floor(index/8);
   let j=index%8;
-  if(token==='White' && i>0) { //White-North
+  if(turnToken==='White' && i>0) { //White-North
     if(boardValue[i-1][j]===null) {
       board[index-8].style.background='green';
       if(index>47 && boardValue[i-2][j]===null) {board[index-16].style.background='green';} //Melangkah 2x sebelum di tengah
     }
     if(j<7) { //northWest
-      if(boardValue[i-1][j-1]!==null && boardValue[i-1][j-1].match(token==='White'?'Black':'White')) {board[index-7].style.background='red';}
+      if(boardValue[i-1][j-1]!==null && boardValue[i-1][j-1].match(turnToken==='White'?'Black':'White')) {board[index-9].style.background='red';}
     }
     if(j>0) { //northEast
-      if(boardValue[i-1][j+1]!==null && boardValue[i-1][j+1].match(token==='White'?'Black':'White')) {board[index-9].style.background='red';}
+      if(boardValue[i-1][j+1]!==null && boardValue[i-1][j+1].match(turnToken==='White'?'Black':'White')) {board[index-7].style.background='red';}
     }
   }
 
-  if(token==='Black' && i<7) { //Black-South
+  if(turnToken==='Black' && i<7) { //Black-South
     if(boardValue[i+1][j]===null) {
       board[index+8].style.background='green'; //Melangkah sekali
       if(index<16 && boardValue[i+2][j]===null) {board[index+16].style.background='green';} //Melangkah 2x sebelum di tengah
     }
     if(j<7) { //SouthWest
-      if(boardValue[i+1][j-1]!==null && boardValue[i+1][j-1].match(token==='White'?'Black':'White')) {board[index+7].style.background='red';}
+      if(boardValue[i+1][j-1]!==null && boardValue[i+1][j-1].match(turnToken==='White'?'Black':'White')) {board[index+7].style.background='red';}
     }
     if(j>0) { //northEast
-      if(boardValue[i+1][j+1]!==null && boardValue[i+1][j+1].match(token==='White'?'Black':'White')) {board[index+9].style.background='red';}
+      if(boardValue[i+1][j+1]!==null && boardValue[i+1][j+1].match(turnToken==='White'?'Black':'White')) {board[index+9].style.background='red';}
     }
   }
 }
@@ -138,28 +141,28 @@ function rookMove(index) {
   if(i>0) { //north
     for(let n=1; n<8 && (i-n)>=0; n++) {
       if(boardValue[i-n][j]===null) {board[index-(n*8)].style.background='green';}
-      else if(boardValue[i-n][j].match(token==='White'?'Black':'White')) {board[index-(n*8)].style.background='red'; break;}
+      else if(boardValue[i-n][j].match(turnToken==='White'?'Black':'White')) {board[index-(n*8)].style.background='red'; break;}
       else {break;}
     }
   }
   if(i<7) { //south
     for(let s=1; s<8 && (i+s)<8; s++) {
       if(boardValue[i+s][j]===null) {board[index+(s*8)].style.background='green';}
-      else if(boardValue[i+s][j].match(token==='White'?'Black':'White')) {board[index+(s*8)].style.background='red'; break;}
+      else if(boardValue[i+s][j].match(turnToken==='White'?'Black':'White')) {board[index+(s*8)].style.background='red'; break;}
       else {break;}
     }
   }
   if(j>0) { //east
     for(let e=1; e<8 && (j-e)>=0; e++) {
       if(boardValue[i][j-e]===null) {board[index-e].style.background='green';}
-      else if(boardValue[i][j-e].match(token==='White'?'Black':'White')) {board[index-e].style.background='red'; break;}
+      else if(boardValue[i][j-e].match(turnToken==='White'?'Black':'White')) {board[index-e].style.background='red'; break;}
       else {break;}
     }
   }
   if(j<7) { //west
     for(let w=1; w<8 && (j+w)<8; w++) {
       if(boardValue[i][j+w]===null) {board[index+w].style.background='green';}
-      else if(boardValue[i][j+w].match(token==='White'?'Black':'White')) {board[index+w].style.background='red'; break;}
+      else if(boardValue[i][j+w].match(turnToken==='White'?'Black':'White')) {board[index+w].style.background='red'; break;}
       else {break;}
     }
   }
@@ -172,41 +175,41 @@ function knightMove(index) {
   if(i>0) {//close-North
     if(j<6) { //North-East
       if(boardValue[i-1][j+2]===null) {board[index-6].style.background='green';}
-      else if(boardValue[i-1][j+2].match(token==='White'?'Black':'White')) {board[index-6].style.background='red';}
+      else if(boardValue[i-1][j+2].match(turnToken==='White'?'Black':'White')) {board[index-6].style.background='red';}
     }
     if(j>1) { //North-West
       if(boardValue[i-1][j-2]===null) {board[index-10].style.background='green';}
-      else if(boardValue[i-1][j-2].match(token==='White'?'Black':'White')) {board[index-10].style.background='red';}
+      else if(boardValue[i-1][j-2].match(turnToken==='White'?'Black':'White')) {board[index-10].style.background='red';}
     }
   }
   if(i>1) {//Far-North
     if(j<7) { //North-East
       if(boardValue[i-2][j+1]===null) {board[index-15].style.background='green';}
-      else if(boardValue[i-2][j+1].match(token==='White'?'Black':'White')) {board[index-15].style.background='red'}
+      else if(boardValue[i-2][j+1].match(turnToken==='White'?'Black':'White')) {board[index-15].style.background='red'}
     }
     if(j>0) { //North-West
       if(boardValue[i-2][j-1]===null) {board[index-17].style.background='green';}
-      else if(boardValue[i-2][j-1].match(token==='White'?'Black':'White')) {board[index-17].style.background='red'}
+      else if(boardValue[i-2][j-1].match(turnToken==='White'?'Black':'White')) {board[index-17].style.background='red'}
     }
   }
   if(i<7) {//close-South
     if(j<6) { //South-East
       if(boardValue[i+1][j+2]===null) {board[index+10].style.background='green';}
-      else if(boardValue[i+1][j+2].match(token==='White'?'Black':'White')) {board[index+10].style.background='red'}
+      else if(boardValue[i+1][j+2].match(turnToken==='White'?'Black':'White')) {board[index+10].style.background='red'}
     }
     if(j>1) { //South-West
       if(boardValue[i+1][j-2]===null) {board[index+6].style.background='green';}
-      else if(boardValue[i+1][j-2].match(token==='White'?'Black':'White')) {board[index+6].style.background='red'}
+      else if(boardValue[i+1][j-2].match(turnToken==='White'?'Black':'White')) {board[index+6].style.background='red'}
     }
   }
   if(i<6) {//Far-South
     if(j<7) { //South-East
       if(boardValue[i+2][j+1]===null) {board[index+17].style.background='green';}
-      else if(boardValue[i+2][j+1].match(token==='White'?'Black':'White')) {board[index+17].style.background='red'}
+      else if(boardValue[i+2][j+1].match(turnToken==='White'?'Black':'White')) {board[index+17].style.background='red'}
     }
     if(j>0) { //South-West
       if(boardValue[i+2][j-1]===null) {board[index+15].style.background='green';}
-      else if(boardValue[i+2][j-1].match(token==='White'?'Black':'White')) {board[index+15].style.background='red'}
+      else if(boardValue[i+2][j-1].match(turnToken==='White'?'Black':'White')) {board[index+15].style.background='red'}
     }
   }
 }
@@ -218,28 +221,28 @@ function bishopMove(index) {
   if(i>0 && j<7) { //northEast
     for(let ne=1; ne<8 && (i-ne)>=0 && (j+ne)<8; ne++) {
       if(boardValue[i-ne][j+ne]===null) {board[index-(ne*8)+ne].style.background='green';}
-      else if(boardValue[i-ne][j+ne].match(token==='White'?'Black':'White')) {board[index-(ne*8)+ne].style.background='red'; break;}
+      else if(boardValue[i-ne][j+ne].match(turnToken==='White'?'Black':'White')) {board[index-(ne*8)+ne].style.background='red'; break;}
       else {break;}
     }
   }
   if(i<7 && j<7) { //southEast
     for(let se=1; se<8 && (i+se)<8 && (j+se)<8; se++) {
       if(boardValue[i+se][j+se]===null) {board[index+(se*8)+se].style.background='green';}
-      else if(boardValue[i+se][j+se].match(token==='White'?'Black':'White')) {board[index+(se*8)+se].style.background='red'; break;}
+      else if(boardValue[i+se][j+se].match(turnToken==='White'?'Black':'White')) {board[index+(se*8)+se].style.background='red'; break;}
       else {break;}
     }
   }
   if(i>0 && j>0) { //nothWest
     for(let nw=1; nw<8 && (i-nw)>=0 && (j-nw)>=0; nw++) {
       if(boardValue[i-nw][j-nw]===null) {board[index-nw-(nw*8)].style.background='green';}
-      else if(boardValue[i-nw][j-nw].match(token==='White'?'Black':'White')) {board[index-nw-(nw*8)].style.background='red'; break;}
+      else if(boardValue[i-nw][j-nw].match(turnToken==='White'?'Black':'White')) {board[index-nw-(nw*8)].style.background='red'; break;}
       else {break;}
     }
   }
-  if(i>7 && j<7) { //southWest
+  if(i>0 && j<7) { //southWest
     for(let sw=1; sw<8 && (i+sw)<8 && (j-sw)>=0; sw++) {
       if(boardValue[i+sw][j-sw]===null) {board[index-sw+(sw*8)].style.background='green';}
-      else if(boardValue[i+sw][j-sw].match(token==='White'?'Black':'White')) {board[index-sw+(sw*8)].style.background='red'; break;}
+      else if(boardValue[i+sw][j-sw].match(turnToken==='White'?'Black':'White')) {board[index-sw+(sw*8)].style.background='red'; break;}
       else {break;}
     }
   }
@@ -251,35 +254,35 @@ function kingMove(index) {
   let j=index%8;
   if(i>0) { //north
     if(boardValue[i-1][j]===null) {board[index-8].style.background='green';}
-    else if(boardValue[i-1][j].match(token==='White'?'Black':'White')) {board[index-8].style.background='red';}
+    else if(boardValue[i-1][j].match(turnToken==='White'?'Black':'White')) {board[index-8].style.background='red';}
     if(j<7) { //northWest
       if(boardValue[i-1][j-1]===null) {board[index-9].style.background='green';}
-      else if(boardValue[i-1][j-1].match(token==='White'?'Black':'White')) {board[index-9].style.background='red';}
+      else if(boardValue[i-1][j-1].match(turnToken==='White'?'Black':'White')) {board[index-9].style.background='red';}
     }
     if(j>0) { //northEast
       if(boardValue[i-1][j+1]===null) {board[index-7].style.background='green';}
-      else if(boardValue[i-1][j+1].match(token==='White'?'Black':'White')) {board[index-7].style.background='red';}
+      else if(boardValue[i-1][j+1].match(turnToken==='White'?'Black':'White')) {board[index-7].style.background='red';}
     }
   }
   if(i<7) { //south
     if(boardValue[i+1][j]===null) {board[index+8].style.background='green';}
-    else if(boardValue[i+1][j].match(token==='White'?'Black':'White')) {board[index+8].style.background='red';}
+    else if(boardValue[i+1][j].match(turnToken==='White'?'Black':'White')) {board[index+8].style.background='red';}
     if(j<7) { //southWest
       if(boardValue[i+1][j-1]===null) {board[index+7].style.background='green';}
-      else if(boardValue[i+1][j-1].match(token==='White'?'Black':'White')) {board[index+7].style.background='red';}
+      else if(boardValue[i+1][j-1].match(turnToken==='White'?'Black':'White')) {board[index+7].style.background='red';}
     }
     if(j>0) { //southEast
       if(boardValue[i+1][j+1]===null) {board[index+9].style.background='green';}
-      else if(boardValue[i+1][j+1].match(token==='White'?'Black':'White')) {board[index+9].style.background='red';}
+      else if(boardValue[i+1][j+1].match(turnToken==='White'?'Black':'White')) {board[index+9].style.background='red';}
     }
   }
   if(j>0) { //west
     if(boardValue[i][j+1]===null) {board[index+1].style.background='green';}
-    else if(boardValue[i][j+1].match(token==='White'?'Black':'White')) {board[index+1].style.background='red';}
+    else if(boardValue[i][j+1].match(turnToken==='White'?'Black':'White')) {board[index+1].style.background='red';}
   }
   if(j<7) { //east
     if(boardValue[i][j-1]===null) {board[index-1].style.background='green';}
-    else if(boardValue[i][j-1].match(token==='White'?'Black':'White')) {board[index-1].style.background='red';}
+    else if(boardValue[i][j-1].match(turnToken==='White'?'Black':'White')) {board[index-1].style.background='red';}
   }
 }
 
@@ -288,11 +291,13 @@ function movePawn(index1,index2,movingToken) {
   let j1=index1%8;
   let i2=Math.floor(index2/8);
   let j2=index2%8;
+  let target=boardValue[i2][j2]
   tileImage[index1].innerHTML='';
   boardValue[i1][j1]=null;
   tileImage[index2].innerHTML=pawnSelector(movingToken);
   boardValue[i2][j2]=movingToken;
-  changeTurn();
+  if(target==='BlackKing' || target==='WhiteKing') {chessWin()}
+  else{changeTurnChess();}
 }
 
 function pawnSelector(inputToken) {
@@ -310,8 +315,8 @@ function pawnSelector(inputToken) {
   else if(inputToken==='BlackKing') {return BlackKing;}
 }
 
-function changeTurn() {
-  token=(token==='White'?'Black':'White');
+function changeTurnChess() {
+  turnToken=(turnToken==='White'?'Black':'White');
   clearTile();
 }
 
@@ -322,10 +327,15 @@ function clearTile() {
   }
 }
 
+function chessWin() {
+  board=board.map(a=>a.disabled='disabled');
+  clearTile();
+}
+
 
 var startIndex=0;
 var destinationIndex=0;
-var turnToken='';
+var tokenStatus='';
 
 var tileImage = document.getElementsByClassName('tile');
 

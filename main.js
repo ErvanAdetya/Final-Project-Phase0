@@ -14,7 +14,7 @@ mainDiv.style.align="center";
 mainDiv.style.margin="center";
 
 var h1 = document.createElement('h1');
-var h1Text = document.createTextNode('Mini Game');
+var h1Text = document.createTextNode('Mini Game Hub');
 h1.appendChild(h1Text);
 mainDiv.appendChild(h1);
 
@@ -31,20 +31,18 @@ h2.appendChild(h2Default);
 gameDiv.appendChild(h2);
 
 var xoButton=document.createElement('button');
-var xoButtonText=document.createTextNode('Tic Tac Toe');
+var ticTacToeText=document.createTextNode('Tic Tac Toe');
 xoButton.setAttribute('class','gameListButton');
-xoButton.appendChild(xoButtonText);
+xoButton.appendChild(ticTacToeText);
 xoButton.addEventListener('click', function() {
-  let xoScript=document.createElement('script');
-  xoScript.setAttribute('src','tictactoe.js');
   gameDiv.removeChild(gameSelectorDiv);
-  gameDiv.appendChild(xoScript);
+  startTicTacToe();
 });
 
 var chessButton=document.createElement('Button');
-var chessButtonText=document.createTextNode('Chess');
+var h2ChessText=document.createTextNode('Chess');
 chessButton.setAttribute('class', 'gameListButton');
-chessButton.appendChild(chessButtonText);
+chessButton.appendChild(h2ChessText);
 chessButton.addEventListener('click', function() {
   gameDiv.removeChild(gameSelectorDiv);
   startChess();

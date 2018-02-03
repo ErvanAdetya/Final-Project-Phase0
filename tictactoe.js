@@ -1,26 +1,39 @@
-function creatingBoard() {
+function startTicTacToe() {
+  board=[];
+  boardValue=[[1,2,3],[4,5,6],[7,8,9]];
+  turnToken='O';
+
+  h2.removeChild(h2.firstChild);
+  h2.appendChild(document.createTextNode('Tic Tac Toe'));
+  gameDiv.appendChild(boardDiv);
+  creatingTicTacToeBoard();
+}
+
+function creatingTicTacToeBoard() {
   let boxDiv = document.createElement('div');
   for(let i=0; i<3; i++) {
     let rowDiv = document.createElement('div');
     for(let j=0; j<3; j++) {
       let button= document.createElement('button');
+      button.setAttribute('class','TicTacToeTile');
       let index=(j+1)+(i*3);
       button.style.height='50px';
       button.style.width='50px';
       let buttonText= document.createTextNode((j+1)+(i*3));
       button.appendChild(buttonText);
       button.addEventListener('click', function() {
+        console.log('Wow');
         moves--;
-	button.style.color='white';
+	      button.style.color='white';
         if(turnToken==='O') {button.style.background='red';}
-	else {button.style.background='green';}
+	      else {button.style.background='green';}
         button.removeChild(buttonText);
         buttonText= document.createTextNode(turnToken);
         button.appendChild(buttonText);
         boardValue[i][j]=turnToken;
         checkWin();
         button.disabled='disabled';
-        changeTurn();
+        changeTurnTicTacToe();
         if(aiToken===turnToken && moves!==0) {aiEasy();}
       });
       board.push(button);
@@ -31,7 +44,7 @@ function creatingBoard() {
   boardDiv.appendChild(boxDiv);
 }
 
-function changeTurn() {
+function changeTurnTicTacToe() {
   turnToken==='O'? turnToken='X':turnToken='O';
 }
 
@@ -64,19 +77,9 @@ function aiEasy() {
 }
 
 //Main
-board=[];
-boardValue=[[1,2,3],[4,5,6],[7,8,9]];
-turnToken='O';
 var aiToken='X';
 var moves=9;
 
-
-h2.removeChild(h2.firstChild);
-var h2TicTacToeText = document.createTextNode('TIC TAC TOE');
-h2.appendChild(h2TicTacToeText);
-
-gameDiv.appendChild(boardDiv);
-creatingBoard();
 
 var endGameMenu=document.createElement('div');
 endGameMenu.setAttribute('id','endGameMenu');
@@ -97,7 +100,7 @@ retryButton.addEventListener('click', function() {
   turnToken='O';
   aiToken='X';
   moves=9;
-  creatingBoard();
+  creatingTicTacToeBoard();
 });
 endGameMenu.appendChild(retryButton);
 
