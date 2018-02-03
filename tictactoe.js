@@ -64,9 +64,9 @@ function aiEasy() {
 }
 
 //Main
-var board=[];
-var boardValue=[[1,2,3],[4,5,6],[7,8,9]];
-var turnToken='O';
+board=[];
+boardValue=[[1,2,3],[4,5,6],[7,8,9]];
+turnToken='O';
 var aiToken='X';
 var moves=9;
 
@@ -108,6 +108,7 @@ returnButton.setAttribute('id','return');
 var returnButtonText=document.createTextNode('Back To Menu');
 returnButton.appendChild(returnButtonText);
 returnButton.addEventListener('click', function() {
+  boardDiv.removeChild(boardDiv.firstChild);
   gameDiv.removeChild(endGameMenu);
   gameDiv.removeChild(boardDiv);
   gameDiv.appendChild(gameSelectorDiv);

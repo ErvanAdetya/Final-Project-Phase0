@@ -1,3 +1,13 @@
+function startChess(){
+  board=[];
+  boardValue=[[],[],[],[],[],[],[],[]];
+  moving=false;
+  token='White';
+
+  gameDiv.appendChild(boardDiv);
+  creatingChessBoard();
+  placingPawn();
+}
 function creatingChessBoard() {
   let boxDiv = document.createElement('div');
   for(let i=0; i<8; i++) {
@@ -14,27 +24,26 @@ function creatingChessBoard() {
       tile.addEventListener('click', function() {
         if(boardValue[i][j]!==null && boardValue[i][j].match(token)) {
           clearTile();
-          if(boardValue[i][j].match(/Pawn$/)){movingNow='Pawn'; pawnMove(index);}
-          else if(boardValue[i][j].match(/Rook$/)){movingNow='Rook'; rookMove(index);}
-          else if(boardValue[i][j].match(/Knight$/)){movingNow='Knight'; knightMove(index);}
-          else if(boardValue[i][j].match(/Bishop$/)){movingNow='Bishop'; bishopMove(index);}
-          else if(boardValue[i][j].match(/Queen$/)){movingNow='Queen'; rookMove(index); bishopMove(index);}
+          if(boardValue[i][j].match(/Pawn$/)){turnToken='Pawn'; pawnMove(index);}
+          else if(boardValue[i][j].match(/Rook$/)){turnToken='Rook'; rookMove(index);}
+          else if(boardValue[i][j].match(/Knight$/)){turnToken='Knight'; knightMove(index);}
+          else if(boardValue[i][j].match(/Bishop$/)){turnToken='Bishop'; bishopMove(index);}
+          else if(boardValue[i][j].match(/Queen$/)){turnToken='Queen'; rookMove(index); bishopMove(index);}
+          else if(boardValue[i][j].match(/King$/)){turnToken='King'; kingMove(index);}
           startIndex=index;
         }
         else if(tile.style.background==='green' || tile.style.background==='red') {
-	        movePawn(startIndex,index,token+movingNow)
+	        movePawn(startIndex,index,token+turnToken)
         }
         else if(tile.style.background!=='green') {
-	  moving=false;
+          moving=false;            
           clearTile();
         }
       });
       board.push(tile);
       rowDiv.appendChild(tile);
-    }
-    boxDiv.appendChild(rowDiv);
-  }
-  boardDiv.appendChild(boxDiv);
+    }boxDiv.appendChild(rowDiv);
+  }boardDiv.appendChild(boxDiv);
 }
 
 function placingPawn() {
@@ -56,7 +65,7 @@ function placingPawn() {
       boardValue[Math.floor(i/8)].push('BlackBishop');
     }
     else if(i===3) {
-      tileImage[i].innerHTML='<img src="img/Chess_Pawn/BlackKing.png" height=35px width=35px align=center/>';
+      tileImage[i].innerHTML=BlackKing;
       boardValue[Math.floor(i/8)].push('BlackKing');
     }
     else if(i===4) {
@@ -80,7 +89,7 @@ function placingPawn() {
       boardValue[Math.floor(i/8)].push('WhiteBishop');
     }
     else if(i===59) {
-      tileImage[i].innerHTML='<img src="img/Chess_Pawn/WhiteKing.png" height=35px width=35px align=center/>';
+      tileImage[i].innerHTML=WhiteKing
       boardValue[Math.floor(i/8)].push('WhiteKing');
     }
     else if(i===60) {
@@ -95,19 +104,30 @@ function pawnMove(index) { //bug melangkah 2 di awal ketika di depan nya ada pio
   moving=true;
   let i=Math.floor(index/8);
   let j=index%8;
-
-  if(token==='Black'&& (i+1)<7) {
-    if(boardValue[i+1][j]===null && boardValue[i+1][j]!==undefined) {board[index+8].style.background='green';}
-    if(boardValue[i+1][j+1]!==null && boardValue[i+1][j+1]!==undefined) {board[index+9].style.background='red';}
-    if(boardValue[i+1][j-1]!==null && boardValue[i+1][j-1]!==undefined) {board[index+7].style.background='red';}
-    if(index<16 && boardValue[i+2][j]===null) {board[index+16].style.background='green';}
+  if(token==='White' && i>0) { //White-North
+    if(boardValue[i-1][j]===null) {
+      board[index-8].style.background='green';
+      if(index>47 && boardValue[i-2][j]===null) {board[index-16].style.background='green';} //Melangkah 2x sebelum di tengah
+    }
+    if(j<7) { //northWest
+      if(boardValue[i-1][j-1]!==null && boardValue[i-1][j-1].match(token==='White'?'Black':'White')) {board[index-7].style.background='red';}
+    }
+    if(j>0) { //northEast
+      if(boardValue[i-1][j+1]!==null && boardValue[i-1][j+1].match(token==='White'?'Black':'White')) {board[index-9].style.background='red';}
+    }
   }
 
-  if(token==='White' && (i-1)>0) {
-    if(boardValue[i-1][j]===null && boardValue[i-1][j]!==undefined) {board[index-8].style.background='green';}
-    if(boardValue[i-1][j+1]!==null && boardValue[i-1][j+1]!==undefined) {board[index-7].style.background='red';}
-    if(boardValue[i-1][j-1]!==null && boardValue[i-1][j-1]!==undefined) {board[index-9].style.background='red';}
-    if(index>47 && boardValue[i-2][j]===null) {board[index-16].style.background='green';}
+  if(token==='Black' && i<7) { //Black-South
+    if(boardValue[i+1][j]===null) {
+      board[index+8].style.background='green'; //Melangkah sekali
+      if(index<16 && boardValue[i+2][j]===null) {board[index+16].style.background='green';} //Melangkah 2x sebelum di tengah
+    }
+    if(j<7) { //SouthWest
+      if(boardValue[i+1][j-1]!==null && boardValue[i+1][j-1].match(token==='White'?'Black':'White')) {board[index+7].style.background='red';}
+    }
+    if(j>0) { //northEast
+      if(boardValue[i+1][j+1]!==null && boardValue[i+1][j+1].match(token==='White'?'Black':'White')) {board[index+9].style.background='red';}
+    }
   }
 }
 
@@ -115,7 +135,6 @@ function rookMove(index) {
   moving=true;
   let i=Math.floor(index/8);
   let j=index%8;
-  console.log(i,j)
   if(i>0) { //north
     for(let n=1; n<8 && (i-n)>=0; n++) {
       if(boardValue[i-n][j]===null) {board[index-(n*8)].style.background='green';}
@@ -137,9 +156,8 @@ function rookMove(index) {
       else {break;}
     }
   }
-  if(j<7) { //west ke kanan
+  if(j<7) { //west
     for(let w=1; w<8 && (j+w)<8; w++) {
-      console.log(boardValue[i][j+w]);
       if(boardValue[i][j+w]===null) {board[index+w].style.background='green';}
       else if(boardValue[i][j+w].match(token==='White'?'Black':'White')) {board[index+w].style.background='red'; break;}
       else {break;}
@@ -154,41 +172,41 @@ function knightMove(index) {
   if(i>0) {//close-North
     if(j<6) { //North-East
       if(boardValue[i-1][j+2]===null) {board[index-6].style.background='green';}
-      else if(boardValue[i-1][j+2].match(token==='White'?'Black':'White')) {board[index-6].style.background='red'; break;}
+      else if(boardValue[i-1][j+2].match(token==='White'?'Black':'White')) {board[index-6].style.background='red';}
     }
     if(j>1) { //North-West
       if(boardValue[i-1][j-2]===null) {board[index-10].style.background='green';}
-      else if(boardValue[i-1][-2].match(token==='White'?'Black':'White')) {board[index-10].style.background='red'; break;}
+      else if(boardValue[i-1][j-2].match(token==='White'?'Black':'White')) {board[index-10].style.background='red';}
     }
   }
   if(i>1) {//Far-North
     if(j<7) { //North-East
       if(boardValue[i-2][j+1]===null) {board[index-15].style.background='green';}
-      else if(boardValue[i-2][j+1].match(token==='White'?'Black':'White')) {board[index-15].style.background='red'; break;}
+      else if(boardValue[i-2][j+1].match(token==='White'?'Black':'White')) {board[index-15].style.background='red'}
     }
     if(j>0) { //North-West
       if(boardValue[i-2][j-1]===null) {board[index-17].style.background='green';}
-      else if(boardValue[i-2][j-1].match(token==='White'?'Black':'White')) {board[index-17].style.background='red'; break;}
+      else if(boardValue[i-2][j-1].match(token==='White'?'Black':'White')) {board[index-17].style.background='red'}
     }
   }
   if(i<7) {//close-South
     if(j<6) { //South-East
       if(boardValue[i+1][j+2]===null) {board[index+10].style.background='green';}
-      else if(boardValue[i+1][j+2].match(token==='White'?'Black':'White')) {board[index+10].style.background='red'; break;}
+      else if(boardValue[i+1][j+2].match(token==='White'?'Black':'White')) {board[index+10].style.background='red'}
     }
     if(j>1) { //South-West
       if(boardValue[i+1][j-2]===null) {board[index+6].style.background='green';}
-      else if(boardValue[i+1][-2].match(token==='White'?'Black':'White')) {board[index+6].style.background='red'; break;}
+      else if(boardValue[i+1][j-2].match(token==='White'?'Black':'White')) {board[index+6].style.background='red'}
     }
   }
   if(i<6) {//Far-South
     if(j<7) { //South-East
-      if(boardValue[i+2][j+1]===null) {board[index+15].style.background='green';}
-      else if(boardValue[i+2][j+1].match(token==='White'?'Black':'White')) {board[index+15].style.background='red'; break;}
+      if(boardValue[i+2][j+1]===null) {board[index+17].style.background='green';}
+      else if(boardValue[i+2][j+1].match(token==='White'?'Black':'White')) {board[index+17].style.background='red'}
     }
     if(j>0) { //South-West
-      if(boardValue[i-2][j-1]===null) {board[index+17].style.background='green';}
-      else if(boardValue[i-2][j-1].match(token==='White'?'Black':'White')) {board[index-17].style.background='red'; break;}
+      if(boardValue[i+2][j-1]===null) {board[index+15].style.background='green';}
+      else if(boardValue[i+2][j-1].match(token==='White'?'Black':'White')) {board[index+15].style.background='red'}
     }
   }
 }
@@ -197,7 +215,6 @@ function bishopMove(index) {
   moving=true;
   let i=Math.floor(index/8);
   let j=index%8;
-  console.log(i,j)
   if(i>0 && j<7) { //northEast
     for(let ne=1; ne<8 && (i-ne)>=0 && (j+ne)<8; ne++) {
       if(boardValue[i-ne][j+ne]===null) {board[index-(ne*8)+ne].style.background='green';}
@@ -228,6 +245,44 @@ function bishopMove(index) {
   }
 }
 
+function kingMove(index) {
+  moving=true;
+  let i=Math.floor(index/8);
+  let j=index%8;
+  if(i>0) { //north
+    if(boardValue[i-1][j]===null) {board[index-8].style.background='green';}
+    else if(boardValue[i-1][j].match(token==='White'?'Black':'White')) {board[index-8].style.background='red';}
+    if(j<7) { //northWest
+      if(boardValue[i-1][j-1]===null) {board[index-9].style.background='green';}
+      else if(boardValue[i-1][j-1].match(token==='White'?'Black':'White')) {board[index-9].style.background='red';}
+    }
+    if(j>0) { //northEast
+      if(boardValue[i-1][j+1]===null) {board[index-7].style.background='green';}
+      else if(boardValue[i-1][j+1].match(token==='White'?'Black':'White')) {board[index-7].style.background='red';}
+    }
+  }
+  if(i<7) { //south
+    if(boardValue[i+1][j]===null) {board[index+8].style.background='green';}
+    else if(boardValue[i+1][j].match(token==='White'?'Black':'White')) {board[index+8].style.background='red';}
+    if(j<7) { //southWest
+      if(boardValue[i+1][j-1]===null) {board[index+7].style.background='green';}
+      else if(boardValue[i+1][j-1].match(token==='White'?'Black':'White')) {board[index+7].style.background='red';}
+    }
+    if(j>0) { //southEast
+      if(boardValue[i+1][j+1]===null) {board[index+9].style.background='green';}
+      else if(boardValue[i+1][j+1].match(token==='White'?'Black':'White')) {board[index+9].style.background='red';}
+    }
+  }
+  if(j>0) { //west
+    if(boardValue[i][j+1]===null) {board[index+1].style.background='green';}
+    else if(boardValue[i][j+1].match(token==='White'?'Black':'White')) {board[index+1].style.background='red';}
+  }
+  if(j<7) { //east
+    if(boardValue[i][j-1]===null) {board[index-1].style.background='green';}
+    else if(boardValue[i][j-1].match(token==='White'?'Black':'White')) {board[index-1].style.background='red';}
+  }
+}
+
 function movePawn(index1,index2,movingToken) {
   let i1=Math.floor(index1/8);
   let j1=index1%8;
@@ -251,7 +306,8 @@ function pawnSelector(inputToken) {
   else if(inputToken==='BlackBishop') {return BlackBishop;}
   else if(inputToken==='WhiteQueen') {return WhiteQueen;}
   else if(inputToken==='BlackQueen') {return BlackQueen;}
-  
+  else if(inputToken==='WhiteKing') {return WhiteKing;}
+  else if(inputToken==='BlackKing') {return BlackKing;}
 }
 
 function changeTurn() {
@@ -266,13 +322,10 @@ function clearTile() {
   }
 }
 
-board=[];
-boardValue=[[],[],[],[],[],[],[],[]];
-moving=false;
-token='White';
+
 var startIndex=0;
 var destinationIndex=0;
-var movingNow='';
+var turnToken='';
 
 var tileImage = document.getElementsByClassName('tile');
 
@@ -285,8 +338,8 @@ var BlackKnight='<img src="img/Chess_Pawn/BlackKnight.png" height=35px width=35p
 var WhiteBishop='<img src="img/Chess_Pawn/WhiteBishop.png" height=35px width=35px align=center/>';
 var BlackBishop='<img src="img/Chess_Pawn/BlackBishop.png" height=35px width=35px align=center/>';
 var WhiteQueen='<img src="img/Chess_Pawn/WhiteQueen.png" height=35px width=35px align=center/>';
-var BlackQueen='<img src="img/Chess_Pawn/BlackQueen.png" height=35px width=35px align=center/>';     
+var BlackQueen='<img src="img/Chess_Pawn/BlackQueen.png" height=35px width=35px align=center/>'; 
+var WhiteKing='<img src="img/Chess_Pawn/WhiteKing.png" height=35px width=35px align=center/>';    
+var BlackKing='<img src="img/Chess_Pawn/BlackKing.png" height=35px width=35px align=center/>';
 
-gameDiv.appendChild(boardDiv);
-creatingChessBoard();
-placingPawn();
+

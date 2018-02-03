@@ -1,8 +1,6 @@
-function textChanger(node,newText) {
-  let newTextNode=document.createTextNode(newText);
-  node.remove(firstChild);
-  node.append(newTextNode);
-}
+var board=[];
+var boardValue=[];
+var turnToken='';
 
 
 var body = document.body;
@@ -48,10 +46,8 @@ var chessButtonText=document.createTextNode('Chess');
 chessButton.setAttribute('class', 'gameListButton');
 chessButton.appendChild(chessButtonText);
 chessButton.addEventListener('click', function() {
-  let chessScript=document.createElement('script');
-  chessScript.setAttribute('src','chess.js');
   gameDiv.removeChild(gameSelectorDiv);
-  gameDiv.appendChild(chessScript);
+  startChess();
 });
 
 
