@@ -8,7 +8,7 @@ function startChess(){
   creatingChessBoard();
   placingPawn();
   h2.removeChild(h2.firstChild);
-  h2.appendChild(h2ChessText);
+  h2.appendChild(document.createTextNode('Chess'));
 }
 function creatingChessBoard() {
   let boxDiv = document.createElement('div');

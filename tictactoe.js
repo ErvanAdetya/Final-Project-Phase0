@@ -2,6 +2,7 @@ function startTicTacToe() {
   board=[];
   boardValue=[[1,2,3],[4,5,6],[7,8,9]];
   turnToken='O';
+  aiToken='X';
 
   h2.removeChild(h2.firstChild);
   h2.appendChild(document.createTextNode('Tic Tac Toe'));
@@ -22,7 +23,6 @@ function creatingTicTacToeBoard() {
       let buttonText= document.createTextNode((j+1)+(i*3));
       button.appendChild(buttonText);
       button.addEventListener('click', function() {
-        console.log('Wow');
         moves--;
 	      button.style.color='white';
         if(turnToken==='O') {button.style.background='red';}
@@ -67,7 +67,6 @@ function win(token) {
   
   h2.appendChild(h2Winner);
   moves=0;
-  gameDiv.appendChild(endGameMenu);
 }
 
 function aiEasy() {
@@ -79,43 +78,3 @@ function aiEasy() {
 //Main
 var aiToken='X';
 var moves=9;
-
-
-var endGameMenu=document.createElement('div');
-endGameMenu.setAttribute('id','endGameMenu');
-
-var retryButton=document.createElement('Button');
-//retryButton.style.height='35px';
-retryButton.style.width='120px'; 
-retryButton.setAttribute('id','retry');
-var retryButtonText=document.createTextNode('Retry');
-retryButton.appendChild(retryButtonText);
-retryButton.addEventListener('click', function() {
-  gameDiv.removeChild(endGameMenu);
-  h2.removeChild(h2.firstChild);
-  h2.appendChild(h2TicTacToeText);
-  boardDiv.removeChild(boardDiv.firstChild);
-  board=[];
-  boardValue=[[1,2,3],[4,5,6],[7,8,9]];
-  turnToken='O';
-  aiToken='X';
-  moves=9;
-  creatingTicTacToeBoard();
-});
-endGameMenu.appendChild(retryButton);
-
-var returnButton=document.createElement('Button');
-//returnButton.style.height='35px';
-returnButton.style.width='120px';
-returnButton.setAttribute('id','return');
-var returnButtonText=document.createTextNode('Back To Menu');
-returnButton.appendChild(returnButtonText);
-returnButton.addEventListener('click', function() {
-  boardDiv.removeChild(boardDiv.firstChild);
-  gameDiv.removeChild(endGameMenu);
-  gameDiv.removeChild(boardDiv);
-  gameDiv.appendChild(gameSelectorDiv);
-  h2.removeChild(h2.firstChild);
-  h2.appendChild(h2Default);
-});
-endGameMenu.appendChild(returnButton);
